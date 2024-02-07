@@ -1,0 +1,10 @@
+name: swift
+description: Work with your Bitrise.swift definition file
+executable:
+  osx: https://github.com/tothszabi/bitrise-plugins-swift/releases/download/0.0.1/bitrise-plugins-swift-Darwin-x86_64
+  osx-arm64: https://github.com/tothszabi/bitrise-plugins-swift/releases/download/0.0.1/bitrise-plugins-swift-Darwin-arm64
+  linux: https://github.com/tothszabi/bitrise-plugins-swift/releases/download/0.0.1/bitrise-plugins-swift-Linux-x86_64
+requirements:
+- tool: bitrise
+  min_version: 1.41.1
+  max_version: ""
