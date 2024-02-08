@@ -82,3 +82,32 @@ func readFirstLine(path string) (string, error) {
 
 	return result, nil
 }
+
+func addFirstLine(path, str string) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Printf("File closing error: %s", err)
+		}
+	}(file)
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	fileContent := str + "\n"
+	for _, line := range lines {
+		fileContent += line + "\n"
+	}
+
+	return os.WriteFile(path, []byte(fileContent), 0755)
+}

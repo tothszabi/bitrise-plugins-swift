@@ -36,12 +36,6 @@ func run() error {
 	dataDir := os.Getenv("BITRISE_PLUGIN_INPUT_DATA_DIR")
 	manifestPath := path.Join(currentDir, "Bitrise.swift")
 
-	//currentDir := "/Users/szabi/Dev/misc/BitriseDescription/BitriseDescription/Demo/"
-	//dataDir := "/Users/szabi/.bitrise/plugins/swift/data/"
-	//manifestPath := "/Users/szabi/Dev/misc/BitriseDescription/BitriseDescription/Demo/Demo.swift"
-	//
-	//return generate(manifestPath, currentDir, dataDir)
-
 	if command == "init" {
 		return initialise(manifestPath)
 	} else if command == "generate" {

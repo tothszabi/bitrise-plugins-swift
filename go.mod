@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/bitrise-io/bitrise v0.0.0-20240123151919-094dbb3882a5
-	github.com/mattn/go-tty v0.0.5
+	github.com/fsnotify/fsnotify v1.7.0
 )
 
 require (
@@ -18,7 +18,6 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.1 // indirect
 	github.com/hashicorp/go-version v1.4.0 // indirect
-	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect

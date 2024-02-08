@@ -55,7 +55,7 @@ func install(version, pluginDataDir string) error {
 	defer func(path string) {
 		err := os.RemoveAll(path)
 		if err != nil {
-			fmt.Printf("failed to remove temp dir: %s", err)
+			fmt.Printf("Failed to remove temp dir: %s", err)
 		}
 	}(dir)
 
@@ -67,7 +67,7 @@ func install(version, pluginDataDir string) error {
 	defer func(out *os.File) {
 		err := out.Close()
 		if err != nil {
-			fmt.Printf("failed to close file: %s", err)
+			fmt.Printf("Failed to close file: %s", err)
 		}
 	}(out)
 
@@ -81,7 +81,7 @@ func install(version, pluginDataDir string) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			fmt.Printf("failed to close response body: %s", err)
+			fmt.Printf("Failed to close response body: %s", err)
 		}
 	}(resp.Body)
 
@@ -109,7 +109,7 @@ func install(version, pluginDataDir string) error {
 		return fmt.Errorf("command failed: %w", err)
 	}
 
-	fmt.Printf("BitriseDescription version %s is installed", version)
+	fmt.Printf("BitriseDescription version %s is installed\n", version)
 
 	return nil
 }

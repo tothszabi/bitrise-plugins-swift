@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"time"
 
-	gotty "github.com/mattn/go-tty"
+	"github.com/fsnotify/fsnotify"
 )
 
 var packageTemplate = `// swift-tools-version: 5.9
@@ -101,33 +100,47 @@ func edit(manifestPath, currentDir, pluginDataDir string) error {
 	}
 
 	fmt.Println()
-	fmt.Println("Press any key to save your manifest file and press CTRL + C once you are finished editing")
+	fmt.Println("Keep this command running to automatically save your manifest (you can quit it by pressing CTRL + C)")
 	fmt.Println()
 
-	tty, err := gotty.Open()
+	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("file watcher failed to init: %w", err)
 	}
-	defer func(tty *gotty.TTY) {
-		err := tty.Close()
+	defer func(watcher *fsnotify.Watcher) {
+		err := watcher.Close()
 		if err != nil {
-			// print error
+			fmt.Printf("Failed to close file watcher: %s", err)
 		}
-	}(tty)
+	}(watcher)
 
-	for {
-		_, err := tty.ReadRune()
-		if err != nil {
-			log.Fatal(err)
+	go func() {
+		for {
+			select {
+			case event := <-watcher.Events:
+				// Apparently, by looking at the fs events, Xcode removes then recreates the file instead writing to it.
+				if event.Op == fsnotify.Write || event.Op == fsnotify.Create {
+					fmt.Printf("Saving at %s\n", time.Now().Format(time.RFC850))
+
+					err = copyItem(manifestPackagePath, manifestPath)
+					if err != nil {
+						fmt.Printf("Could not save manifest: %s\n", err)
+					}
+				}
+
+			case err := <-watcher.Errors:
+				fmt.Printf("File watcher error: %s\n", err)
+			}
 		}
+	}()
 
-		err = copyItem(manifestPackagePath, manifestPath)
-		if err != nil {
-			return err
-		}
-
-		fmt.Printf("Saved at %s\n", time.Now().Format(time.RFC850))
+	if err := watcher.Add(manifestPackagePath); err != nil {
+		return fmt.Errorf("file (%s) watching failure: %w", manifestPath, err)
 	}
+
+	// This is needed to block the execution until the cli quits.
+	done := make(chan bool)
+	<-done
 
 	return nil
 }
